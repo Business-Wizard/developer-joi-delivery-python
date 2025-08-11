@@ -1,14 +1,15 @@
-from typing import Optional
-from ..repository.product_repository import ProductRepository
-from ..domain.product import GroceryProduct
+from typing import Optional, List
+from ..domain.grocery_product import GroceryProduct
 
 
 class ProductService:
-    @staticmethod
-    def get_product(product_repository: ProductRepository, product_id: str, outlet_id: str) -> Optional[GroceryProduct]:
-        product = product_repository.get_product(product_id)
-        if (isinstance(product, GroceryProduct) and 
-            product.store and 
-            product.store.outlet_id == outlet_id):
-            return product
+    def __init__(self, products: List[GroceryProduct]):
+        self.products = products
+
+    def get_product(self, product_id: str, outlet_id: str) -> Optional[GroceryProduct]:
+        for product in self.products:
+            if (product.product_id == product_id and 
+                product.store and 
+                product.store.outlet_id == outlet_id):
+                return product
         return None 

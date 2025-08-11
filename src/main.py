@@ -7,6 +7,9 @@ from starlette.responses import JSONResponse
 
 from .generator.app_initializer import initialize_data
 from .router import router
+from .service.cart_service import CartService
+from .service.user_service import UserService
+from .service.product_service import ProductService
 
 
 def create_app() -> FastAPI:
@@ -18,29 +21,18 @@ def create_app() -> FastAPI:
 
     app.include_router(router)
 
-    app_data = initialize_data()
+    # Initialize services with static seed data
+    seed_data = initialize_data()
     
-    from .repository.user_repository import UserRepository
-    from .repository.product_repository import ProductRepository
-    from .repository.store_repository import StoreRepository
-    from .repository.cart_repository import CartRepository
-    
-    user_repository = UserRepository()
-    product_repository = ProductRepository()
-    store_repository = StoreRepository()
-    cart_repository = CartRepository()
-    
-    user_repository.initialize_with_data(app_data['users'])
-    product_repository.initialize_with_data(app_data['grocery_products'])
-    store_repository.initialize_with_data(app_data['stores'])
-    cart_repository.initialize_with_data(app_data['cart_for_users'])
-    
-    app.state.user_repository = user_repository
-    app.state.product_repository = product_repository
-    app.state.store_repository = store_repository
-    app.state.cart_repository = cart_repository
-    
-    logger.info("Repositories initialized with seed data")
+    app.state.user_service = UserService(users=seed_data['users'])
+    app.state.product_service = ProductService(products=seed_data['grocery_products'])
+    app.state.cart_service = CartService(
+        user_service=app.state.user_service,
+        product_service=app.state.product_service,
+        cart_for_users=seed_data['cart_for_users']
+    )
+
+    logger.info("Services initialized with static seed data")
 
     @app.exception_handler(RequestValidationError)
     async def custom_validation_exception_handler(request, e):
@@ -52,4 +44,4 @@ def create_app() -> FastAPI:
     return app
 
 
-app = create_app() 
+app = create_app()

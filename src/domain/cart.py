@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import List
 from .outlet import Outlet
 from .user import User
-from .product import Product, GroceryProduct, FoodProduct
+from .product import Product
 
 
 @dataclass

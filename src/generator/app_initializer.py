@@ -3,17 +3,16 @@ from typing import Dict, List
 from loguru import logger
 from ..domain.cart import Cart
 from ..domain.user import User
-from ..domain.store import GroceryStore
-from ..domain.product import GroceryProduct
+from ..domain.grocery_store import GroceryStore
+from ..domain.grocery_product import GroceryProduct
 
 
 class SeedData:
     @staticmethod
-    def create_cart_for_user(user_id: str, first_name: str, last_name: str, cart_id: str) -> Cart:
-        user = SeedData.create_user(user_id, first_name, last_name)
+    def create_cart_for_user(user_id: str, first_name: str, last_name: str, cart_id: str, outlet: GroceryStore, user: User) -> Cart:
         return Cart(
             cart_id=cart_id,
-            outlet=SeedData.create_store("Fresh Picks", "store101"),
+            outlet=outlet,
             user=user
         )
     
@@ -56,29 +55,27 @@ class SeedData:
         )
 
 
+store101 = SeedData.create_store("Fresh Picks", "store101")
+store102 = SeedData.create_store("Natural Choice", "store102")
+user101 = SeedData.create_user("user101", "John", "Doe")
+
+cart_for_users = {
+    "user101": SeedData.create_cart_for_user("user101", "John", "Doe", "cart101", store101, user101),
+    "user102": SeedData.create_cart_for_user("user102", "Rachel", "Zane", "cart102", store101, user101)
+}
+
+grocery_products = [
+    SeedData.create_grocery_product("Wheat Bread", "product101", store101),
+    SeedData.create_grocery_product("Spinach", "product102", store101),
+    SeedData.create_grocery_product("Crackers", "product103", store101)
+]
+
+users = [user101]
+stores = [store101, store102]
+
+
 def initialize_data():
     logger.info("Initializing application with seed data...")
-    
-    # Create seed data instances
-    store101 = SeedData.create_store("Fresh Picks", "store101")
-    store102 = SeedData.create_store("Natural Choice", "store102")
-    user101 = SeedData.create_user("user101", "John", "Doe")
-    
-    # Create cart for users
-    cart_for_users: Dict[str, Cart] = {
-        "user101": SeedData.create_cart_for_user("user101", "John", "Doe", "cart101"),
-        "user102": SeedData.create_cart_for_user("user102", "Rachel", "Zane", "cart102")
-    }
-    
-    # Create grocery products
-    grocery_products: List[GroceryProduct] = [
-        SeedData.create_grocery_product("Wheat Bread", "product101", store101),
-        SeedData.create_grocery_product("Spinach", "product102", store101),
-        SeedData.create_grocery_product("Crackers", "product103", store101)
-    ]
-    
-    # Create users list
-    users: List[User] = [user101]
     
     # Log seed data information
     logger.info(f"Initialized {len(users)} users")
@@ -91,6 +88,6 @@ def initialize_data():
     return {
         'users': users,
         'grocery_products': grocery_products,
-        'stores': [store101, store102],
+        'stores': stores,
         'cart_for_users': cart_for_users
     } 

@@ -12,4 +12,4 @@ class Outlet:
             "name": self.name,
             "description": self.description,
             "outlet_id": self.outlet_id
-        } 
+        }

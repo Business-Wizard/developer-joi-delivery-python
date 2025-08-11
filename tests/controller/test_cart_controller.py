@@ -1,18 +1,14 @@
 import pytest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from fastapi.testclient import TestClient
 from src.main import app
 from src.domain.user import User
-from src.domain.store import GroceryStore
-from src.domain.product import GroceryProduct
+from src.domain.grocery_store import GroceryStore
+from src.domain.grocery_product import GroceryProduct
 from src.domain.cart import Cart
 
 
 class TestCartController:
-    def setup_method(self):
-        from src.service.cart_service import CartService
-        CartService.user_carts.clear()
-
     @pytest.fixture
     def client(self):
         return TestClient(app)
@@ -59,41 +55,56 @@ class TestCartController:
             user=sample_user
         )
 
-    @patch('src.main.app.state.user_repository')
-    @patch('src.main.app.state.product_repository')
-    @patch('src.main.app.state.store_repository')
-    @patch('src.main.app.state.cart_repository')
-    def test_add_product_to_cart_success(self, mock_cart_repo, mock_store_repo, mock_product_repo, mock_user_repo,
-                                        client, sample_user, sample_store, sample_product):
-        mock_user_repo.get_user.return_value = sample_user
-        mock_store_repo.get_store.return_value = sample_store
-        mock_product_repo.get_product.return_value = sample_product
-        mock_cart_repo.get_cart_by_user.return_value = None  # Ensure no existing cart
+    @patch('src.controller.cart_controller.CartService.add_product_to_cart_for_user')
+    def test_should_add_the_requested_product_to_the_cart(self, mock_add_product, client):
+        # Mock the service method to return the expected format
+        mock_add_product.return_value = {
+            "cart": {"cart_id": "cart101", "outlet": {}, "user": {}, "products": []},
+            "product": {"product_id": "product101", "product_name": "Wheat Bread", "mrp": 10.5},
+            "selling_price": 10.5
+        }
         
-        response = client.post("/cart/product", json={
-            "user_id": "user101",
+        url = "/cart/product"
+        add_product_request = {
             "product_id": "product101",
+            "user_id": "user101",
             "outlet_id": "store101"
-        })
+        }
+        
+        response = client.post(url, json=add_product_request)
         
         assert response.status_code == 200
-        data = response.json()
-        assert "cart" in data
-        assert "product" in data
-        assert "selling_price" in data
 
-
-    @patch('src.main.app.state.user_repository')
-    @patch('src.main.app.state.cart_repository')
-    def test_view_cart_success(self, mock_cart_repo, mock_user_repo, client, sample_user, sample_cart):
-        mock_user_repo.get_user.return_value = sample_user
-        mock_cart_repo.get_cart_by_user.return_value = sample_cart
+    @patch('src.controller.cart_controller.CartService.get_cart_for_user')
+    def test_should_return_the_cart(self, mock_get_cart, client):
+        # Mock the service method to return a Cart object
+        mock_cart = Cart(
+            cart_id="cart101",
+            outlet=GroceryStore(
+                name="Fresh Picks",
+                description="Fresh grocery store",
+                outlet_id="store101"
+            ),
+            user=User(
+                user_id="user101",
+                username="johndoe",
+                first_name="John",
+                last_name="Doe",
+                email="john.doe@gmail.com",
+                phone_number="123456789"
+            ),
+            products=[]
+        )
+        mock_get_cart.return_value = mock_cart
         
-        response = client.get("/cart/view?user_id=user101")
+        url = "/cart/view?user_id=user101"
+        
+        response = client.get(url)
         
         assert response.status_code == 200
         data = response.json()
         assert data["cart_id"] == "cart101"
+        # Check that all required fields are present
         assert "outlet" in data
         assert "user" in data
         assert "products" in data

@@ -20,7 +20,7 @@ async def root():
                 "view_cart": "/cart/view"
             },
             "inventory": {
-                "health_check": "/inventory/health/{store_id}"
+                "health_check": "/inventory/health?storeId={store_id}"
             },
             "system": {
                 "health": "/health",

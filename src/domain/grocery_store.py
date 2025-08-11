@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Set
 from .outlet import Outlet
-from .product import GroceryProduct
+from .grocery_product import GroceryProduct
 
 
 @dataclass
@@ -13,8 +13,4 @@ class GroceryStore(Outlet):
         base_json.update({
             "inventory": [product.to_json() for product in self.inventory]
         })
-        return base_json
-
-@dataclass
-class Restaurant(Outlet):
-    pass 
+        return base_json 

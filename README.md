@@ -80,7 +80,7 @@ Dummy Products for Stores to sell and users to buy from.
 
 3. **Run the application**
    ```bash
-   poetry run python -m uvicorn src.main:app --reload
+   poetry run python -m uvicorn src.main:app --reload --port 8020
    ```
 
 The application will be available at `http://localhost:8020`

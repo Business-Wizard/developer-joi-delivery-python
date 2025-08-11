@@ -1,8 +1,13 @@
-from typing import Optional
-from ..repository.user_repository import UserRepository
+from typing import Optional, List
+from ..domain.user import User
 
 
 class UserService:
-    @staticmethod
-    def fetch_user_by_id(user_repository: UserRepository, user_id: str) -> Optional['User']:
-        return user_repository.get_user(user_id) 
+    def __init__(self, users: List[User]):
+        self.users = users
+
+    def fetch_user_by_id(self, user_id: str) -> Optional[User]:
+        for user in self.users:
+            if user_id == user.user_id:
+                return user
+        return None 

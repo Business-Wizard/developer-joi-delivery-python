@@ -1,5 +1,8 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .cart import Cart
 
 
 @dataclass
