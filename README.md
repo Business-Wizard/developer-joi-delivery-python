@@ -32,15 +32,15 @@ Your expertise will directly impact how quickly and reliably customers receive t
 
 Sample user profiles are available in the repository to support development and testing scenarios.
 
-| UserId  | FirstName | LastName |
-| ------- | --------- | -------- |
-| user101 | John      | Doe      |
+| User_id | First_name | Last_name |
+| ------- | ---------- | --------- |
+| user101 | John       | Doe       |
 
 ### Stores
 
 Sample store data seeded for development purposes only.
 
-| StoreId  | OutletName     |
+| Store_id | Outlet_name    |
 | -------- | -------------- |
 | store101 | Fresh Picks    |
 | store102 | Natural Choice |
@@ -49,11 +49,11 @@ Sample store data seeded for development purposes only.
 
 Dummy Products for Stores to sell and users to buy from.
 
-| ProductId  | ProductName | StoreRefId |
-| ---------- | ----------- | ---------- |
-| product101 | Wheat Bread | store101   |
-| product102 | Spinach     | store101   |
-| product103 | Crackers    | store101   |
+| Product_id | Product_name | Store_ref_id |
+| ---------- | ------------ | ------------ |
+| product101 | Wheat Bread  | store101     |
+| product102 | Spinach      | store101     |
+| product103 | Crackers     | store101     |
 
 ## Technology Stack
 
@@ -115,9 +115,9 @@ Request Body
 
 ```json
 {
-  "userId": "user101",
-  "productId": "product101",
-  "outletId": "store101"
+  "user_id": "user101",
+  "product_id": "product101",
+  "outlet_id": "store101"
 }
 ```
 
@@ -126,18 +126,18 @@ Response Body
 ```json
 {
   "cart": {
-    "cartId": "cart101",
+    "cart_id": "cart101",
     "outlet": null,
     "products": [
       {
-        "productId": "product103",
-        "productName": "Crackers",
+        "product_id": "product103",
+        "product_name": "Crackers",
         "mrp": 10.5,
-        "sellingPrice": null,
+        "selling_price": null,
         "weight": 500,
-        "expiryDate": 0,
+        "expiry_date": 0,
         "threshold": 10,
-        "availableStock": 30,
+        "available_stock": 30,
         "discount": null,
         "store": {
           "name": "Fresh Picks",
@@ -150,37 +150,37 @@ Response Body
     "user": null
   },
   "product": {
-    "productId": "product103",
-    "productName": "Crackers",
+    "product_id": "product103",
+    "product_name": "Crackers",
     "mrp": 10.5,
-    "sellingPrice": null,
+    "selling_price": null,
     "weight": 500,
-    "expiryDate": 0,
+    "expiry_date": 0,
     "threshold": 10,
-    "availableStock": 30,
+    "available_stock": 30,
     "discount": null,
     "store": {
       "name": "Fresh Picks",
       "description": null,
-      "outletId": "store101",
+      "outlet_id": "store101",
       "inventory": []
     }
   },
-  "sellingPrice": null
+  "selling_price": null
 }
 ```
 
 ### View Cart
 
 ```http
-GET /cart/view?userId=user101
+GET /cart/view?user_id=user101
 ```
 
 Response Body
 
 ```json
 {
-  "cartId": "cart101",
+  "cart_id": "cart101",
   "outlet": null,
   "products": [],
   "user": null
@@ -190,7 +190,7 @@ Response Body
 ### Inventory Health
 
 ```http
-GET /inventory/health?storeid=<storeid>
+GET /inventory/health?store_id=store101
 ```
 
 Response Body

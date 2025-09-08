@@ -10,7 +10,7 @@ class TestInventoryController:
         return TestClient(app)
 
     def test_should_return_the_health_of_the_store(self, client):        
-        get_url = "/inventory/health?storeId=store101"
+        get_url = "/inventory/health?store_id=store101"
 
         # add required mocking.
 

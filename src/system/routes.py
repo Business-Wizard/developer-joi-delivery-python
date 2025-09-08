@@ -17,10 +17,10 @@ async def root():
         "endpoints": {
             "cart": {
                 "add_product": "/cart/product",
-                "view_cart": "/cart/view"
+                "view_cart": "/cart/view?user_id={user_id}"
             },
             "inventory": {
-                "health_check": "/inventory/health?storeId={store_id}"
+                "health_check": "/inventory/health?store_id={store_id}"
             },
             "system": {
                 "health": "/health",
