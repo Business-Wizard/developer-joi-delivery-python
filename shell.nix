@@ -27,6 +27,7 @@ pkgs.mkShell {
 
     if ! $has_venv_dir && $has_pyproject; then
       echo "Creating a virtual environment..."
+      poetry config virtualenvs.in-project true --local
       poetry install
     fi
 
